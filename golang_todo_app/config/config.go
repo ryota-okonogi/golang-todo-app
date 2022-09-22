@@ -3,8 +3,9 @@ package config
 import (
 	"log"
 
+	"golang-todo-app/golang_todo_app/utils"
+
 	"gopkg.in/go-ini/ini.v1"
-	// "todo_app/todo_app/utils"
 )
 
 type ConfigList struct {
@@ -18,6 +19,7 @@ var Config ConfigList //構造体の「ConfigList」を外部から呼び出せ�
 
 func init() {
 	LoadConfig()
+	utils.LoggingSettings(Config.LogFile)
 }
 
 func LoadConfig() {
