@@ -17,4 +17,15 @@ func main() {
 
 	//init関数を呼び出す処理(意味は無いらしい)
 	fmt.Println(models.Db) //パッケージ名.変数名
+
+	//CreateUserのメソッドを作成したら、こちらでテストをする。
+
+	//user定義
+	u := &models.User{}
+	u.Name = "test"
+	u.Email = "test@example.com"
+	u.PassWord = "testtest"
+	fmt.Println(u)
+
+	u.CreateUser()
 }
