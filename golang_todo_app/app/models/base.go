@@ -1,11 +1,13 @@
 package models
 
 import (
+	"crypto/sha1"
 	"database/sql"
 	"fmt"
 	"golang-todo-app/golang_todo_app/config"
 	"log"
 
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -33,4 +35,18 @@ func init() {
 		password STRING,
 		created_at DATETIME)`, tableNameUser)
 	Db.Exec(cmdU)
+}
+
+//uuidとpasswordを作成する関数を用意する
+
+// uuidを作成する関数
+func createUUID() (uuidobj uuid.UUID) { //func 関数名(引数なし) (返り値 返り値の型[uuidパッケージのUUID型を使っているという意])
+	uuidobj, _ = uuid.NewUUID()
+	return uuidobj
+}
+
+// passwordを作成する関数
+func Encrypt(plaintext string) (cryptext string) { //func 関数名(引数 引数の型) (返り値 返り値の型)
+	cryptext = fmt.Sprintf("%x", sha1.Sum([]byte(plaintext)))
+	return cryptext
 }
