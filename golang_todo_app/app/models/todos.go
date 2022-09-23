@@ -89,3 +89,14 @@ func (u *User) GetTodosByUser() (todos []Todo, err error) { //func (レシーバ
 
 	return todos, err
 }
+
+func (t *Todo) UpdateTodo() error { //func (レシーバーの名前 型) 関数名(引数なし) 返り値 {処理内容}
+	cmd := `update todos set content = ?, user_id = ?
+	where id = ?`
+
+	_, err := Db.Exec(cmd, t.Content, t.UserID, t.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
+}
