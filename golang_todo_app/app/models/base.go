@@ -17,6 +17,7 @@ var err error //エラーも変数として定義しておく
 
 const (
 	tableNameUser = "users" //constで定数としてテーブル名を宣言する
+	tableNameTodo = "todos"
 )
 
 // init関数 => テーブルはmain関数の前に作成する
@@ -35,6 +36,14 @@ func init() {
 		password STRING,
 		created_at DATETIME)`, tableNameUser)
 	Db.Exec(cmdU)
+
+	//user作成のコマンド
+	cmdT := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			content TEXT,
+			user_id INTEGER,
+			created_at DATETIME)`, tableNameTodo)
+	Db.Exec(cmdT)
 }
 
 //uuidとpasswordを作成する関数を用意する
