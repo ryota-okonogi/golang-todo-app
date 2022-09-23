@@ -37,7 +37,7 @@ func init() {
 		created_at DATETIME)`, tableNameUser)
 	Db.Exec(cmdU)
 
-	//user作成のコマンド
+	//Todo作成のコマンド
 	cmdT := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			content TEXT,
