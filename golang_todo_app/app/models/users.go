@@ -37,3 +37,19 @@ func (u *User) CreateUser() (err error) { //func (任意のレシーバーの名
 	return err
 
 }
+
+// メソッドではなく関数
+func GetUser(id int) (user User, err error) { //func 関数名(引数 引数の型) (返り値1 型, 返り値2 型)
+	user = User{}
+	cmd := `select id, uuid, name, email, password, created_at
+	from users where id = ?`
+	err = Db.QueryRow(cmd, id).Scan(
+		&user.ID,
+		&user.UUID,
+		&user.Name,
+		&user.Email,
+		&user.PassWord,
+		&user.CreatedAt,
+	)
+	return user, err
+}
