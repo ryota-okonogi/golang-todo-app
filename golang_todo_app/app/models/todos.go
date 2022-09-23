@@ -24,3 +24,18 @@ func (u *User) CreateTodo(content string) (err error) { //func (レシーバー�
 	}
 	return err
 }
+
+// passwordを作成する関数
+func GetTodo(id int) (todo Todo, err error) { //func 関数名(引数 引数の型) (返り値1 型, 返り値2 型)
+	cmd := `select id, content, user_id, created_at from todos
+	where id = ?`
+	todo = Todo{}
+
+	err = Db.QueryRow(cmd, id).Scan(
+		&todo.ID,
+		&todo.Content,
+		&todo.UserID,
+		&todo.CreatedAt,
+	)
+	return todo, err
+}
