@@ -69,3 +69,15 @@ func (u *User) UpdateUser() (err error) { //func (レシーバーの名前 型) 
 	}
 	return err
 }
+
+//ユーザーの削除
+
+// メソッド
+func (u *User) DeleteUser() (err error) {
+	cmd := `delete from users where id = ?` //delete from users で指定したidの user を削除するというコマンド
+	_, err = Db.Exec(cmd, u.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
+}
