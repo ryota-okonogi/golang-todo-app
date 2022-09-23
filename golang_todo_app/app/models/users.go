@@ -16,7 +16,9 @@ type User struct {
 }
 
 // ユーザーの作成
-func (u *User) CreateUser() (err error) { //func (任意のレシーバーの名前 型) メソッド名(引数なし) (返り値 返り値の型) {処理内容}
+
+// メソッド
+func (u *User) CreateUser() (err error) { //func (レシーバーの名前 型) メソッド名(引数なし) (返り値 返り値の型) {処理内容}
 	cmd := `insert into users (
 		uuid,
 		name,
@@ -38,6 +40,8 @@ func (u *User) CreateUser() (err error) { //func (任意のレシーバーの名
 
 }
 
+//ユーザー情報の取得
+
 // メソッドではなく関数
 func GetUser(id int) (user User, err error) { //func 関数名(引数 引数の型) (返り値1 型, 返り値2 型)
 	user = User{}
@@ -52,4 +56,16 @@ func GetUser(id int) (user User, err error) { //func 関数名(引数 引数の�
 		&user.CreatedAt,
 	)
 	return user, err
+}
+
+//ユーザー情報の更新
+
+// メソッド
+func (u *User) UpdateUser() (err error) { //func (レシーバーの名前 型) メソッド名(引数なし) (返り値 返り値の型) {処理内容}
+	cmd := `update users set name = ?, email = ? where id = ?` //update users で指定したidの name, emailを更新するというコマンド
+	_, err = Db.Exec(cmd, u.Name, u.Email, u.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
 }
