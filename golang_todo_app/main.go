@@ -35,4 +35,11 @@ func main() {
 	u, _ := models.GetUser(1) //idが(1)番のユーザーを取得する
 
 	fmt.Println(u)
+
+	//GetUserで取得したユーザーを更新する
+	u.Name = "Test2"
+	u.Email = "test2@example.com"
+	u.UpdateUser()
+	u, _ = models.GetUser(1)
+	fmt.Println(u)
 }
