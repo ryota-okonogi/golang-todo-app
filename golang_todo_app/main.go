@@ -23,8 +23,8 @@ func main() {
 	/*
 		//user定義
 		u := &models.User{}
-		u.Name = "test"
-		u.Email = "test@example.com"
+		u.Name = "test2"
+		u.Email = "test2@example.com"
 		u.PassWord = "testtest"
 		fmt.Println(u)
 
@@ -64,10 +64,20 @@ func main() {
 		fmt.Println(t)
 	*/
 
-	user, _ := models.GetUser(2) //idが(2)番のユーザーを取得する
-	user.CreateTodo("Second Todo")
+	/*
+		user, _ := models.GetUser(3) //idが(3)番のユーザーを取得する
+		user.CreateTodo("Third Todo")
+	*/
 
-	todos, _ := models.GetTodos()
+	/*
+		todos, _ := models.GetTodos()
+		for _, v := range todos {
+			fmt.Println(v)
+		}
+	*/
+
+	user2, _ := models.GetUser(3)
+	todos, _ := user2.GetTodosByUser()
 	for _, v := range todos {
 		fmt.Println(v)
 	}

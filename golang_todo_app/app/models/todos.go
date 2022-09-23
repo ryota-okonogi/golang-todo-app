@@ -62,3 +62,30 @@ func GetTodos() (todos []Todo, err error) { //func 関数名(引数なし) (返�
 
 	return todos, err
 }
+
+// 「特定のユーザーの Todoのリストを取得する」という関数
+func (u *User) GetTodosByUser() (todos []Todo, err error) { //func (レシーバーの名前 型) 関数名(引数なし) (返り値1 型, 返り値2 型) {処理内容}
+	cmd := `select id, content, user_id, created_at from todos
+	where user_id = ?`
+
+	rows, err := Db.Query(cmd, u.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for rows.Next() {
+		var todo Todo //変数宣言
+		err = rows.Scan(
+			&todo.ID,
+			&todo.Content,
+			&todo.UserID,
+			&todo.CreatedAt)
+
+		if err != nil { //エラーハンドリング
+			log.Fatalln(err)
+		}
+		todos = append(todos, todo)
+	}
+	rows.Close() //rowsの処理を終わらせる
+
+	return todos, err
+}
