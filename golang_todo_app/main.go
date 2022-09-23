@@ -20,14 +20,16 @@ func main() {
 
 	//CreateUserのメソッドを作成したら、こちらでテストをする。
 
-	//user定義
-	u := &models.User{}
-	u.Name = "test"
-	u.Email = "test@example.com"
-	u.PassWord = "testtest"
-	fmt.Println(u)
+	/*
+		//user定義
+		u := &models.User{}
+		u.Name = "test"
+		u.Email = "test@example.com"
+		u.PassWord = "testtest"
+		fmt.Println(u)
 
-	u.CreateUser()
+		u.CreateUser()
+	*/
 
 	/*
 
@@ -50,6 +52,13 @@ func main() {
 
 	*/
 
-	user, _ := models.GetUser(2) //idが(2)番のユーザーを取得する
-	user.CreateTodo("First Todo")
+	/*
+		//todosテーブルの作成
+		user, _ := models.GetUser(2) //idが(2)番のユーザーを取得する
+		user.CreateTodo("First Todo")
+	*/
+
+	//関数GetUserの実行(パッケージ名.関数名)
+	t, _ := models.GetTodo(1) //CreateTodoで作成した "First Todo" を取得する
+	fmt.Println(t)
 }
