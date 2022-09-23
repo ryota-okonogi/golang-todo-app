@@ -58,7 +58,18 @@ func main() {
 		user.CreateTodo("First Todo")
 	*/
 
-	//関数GetUserの実行(パッケージ名.関数名)
-	t, _ := models.GetTodo(1) //CreateTodoで作成した "First Todo" を取得する
-	fmt.Println(t)
+	/*
+		//関数GetTodoの実行(パッケージ名.関数名)
+		t, _ := models.GetTodo(1) //CreateTodoで作成した "First Todo" を取得する
+		fmt.Println(t)
+	*/
+
+	user, _ := models.GetUser(2) //idが(2)番のユーザーを取得する
+	user.CreateTodo("Second Todo")
+
+	todos, _ := models.GetTodos()
+	for _, v := range todos {
+		fmt.Println(v)
+	}
+
 }
