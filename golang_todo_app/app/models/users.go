@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"time"
 )
 
@@ -14,6 +13,8 @@ type User struct {
 	PassWord  string
 	CreatedAt time.Time
 }
+
+/*
 
 // ユーザーの作成
 
@@ -80,4 +81,6 @@ func (u *User) DeleteUser() (err error) {
 		log.Fatalln(err)
 	}
 	return err
+
 }
+*/
