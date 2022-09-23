@@ -20,12 +20,19 @@ func main() {
 
 	//CreateUserのメソッドを作成したら、こちらでテストをする。
 
-	//user定義
-	u := &models.User{}
-	u.Name = "test"
-	u.Email = "test@example.com"
-	u.PassWord = "testtest"
-	fmt.Println(u)
+	/*
+		//user定義
+		u := &models.User{}
+		u.Name = "test"
+		u.Email = "test@example.com"
+		u.PassWord = "testtest"
+		fmt.Println(u)
 
-	u.CreateUser()
+		u.CreateUser()
+	*/
+
+	//関数GetUserの実行(パッケージ名.関数名)
+	u, _ := models.GetUser(1) //idが(1)番のユーザーを取得する
+
+	fmt.Println(u)
 }
