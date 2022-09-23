@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"time"
 )
 
@@ -13,8 +14,6 @@ type User struct {
 	PassWord  string
 	CreatedAt time.Time
 }
-
-/*
 
 // ユーザーの作成
 
@@ -58,6 +57,8 @@ func GetUser(id int) (user User, err error) { //func 関数名(引数 引数の�
 	)
 	return user, err
 }
+
+/*
 
 //ユーザー情報の更新
 
