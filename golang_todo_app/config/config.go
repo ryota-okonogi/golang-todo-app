@@ -13,6 +13,7 @@ type ConfigList struct {
 	SQLDriver string //SQLのソース
 	DbName    string //データベース名
 	LogFile   string //ログを残すファイル
+	Static    string //静的ファイルがある階層をconfigに設定
 }
 
 var Config ConfigList //構造体の「ConfigList」を外部から呼び出せるようにする為、グローバルに変数宣言する。
@@ -32,5 +33,6 @@ func LoadConfig() {
 		SQLDriver: cfg.Section("db").Key("driver").String(),
 		DbName:    cfg.Section("db").Key("name").String(),
 		LogFile:   cfg.Section("web").Key("logfile").String(),
+		Static:    cfg.Section("web").Key("static").String(),
 	}
 }
