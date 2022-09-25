@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"golang-todo-app/golang_todo_app/app/models"
 	"golang-todo-app/golang_todo_app/config"
 	"html/template"
 	"net/http"
@@ -19,6 +20,19 @@ func generateHTML(w http.ResponseWriter, data interface{}, filenames ...string) 
 	templates.ExecuteTemplate(w, "layout", data)              //実行コマンド(args1: ResponseWriter, args2: 実行するテンプレート[明示的に渡している], args3: data)
 }
 
+// cookieを取得する関数
+func session(w http.ResponseWriter, r *http.Request) (sess models.Session, err error) { //func 関数名(args1: 型, args2: 型) (返り値1: 型, 返り値2: 型) {処理内容}
+	//httpリクエストからcookieを取得する
+	cookie, err := r.Cookie("_cookie") //cookieのNameとして渡した値を指定してcookieを取得する事ができる
+	if err == nil {
+		sess = models.Session{UUID: cookie.Value}
+		if ok, _ := sess.CheckSession(); !ok { //もし存在しない場合は
+			err = fmt.Errorf("Invalid session") //エラーを生成する("Invalid session" => 無効なセッション)
+		}
+	}
+	return sess, err //sessionとエラーを返す
+}
+
 func StartMainServer() error {
 	files := http.FileServer(http.Dir(config.Config.Static))
 	http.Handle("/static/", http.StripPrefix("/static", files)) //args1: URLPath, args2: files{ ("/static", files)にするのはstaticをPathの階層から取り除くため }
@@ -27,5 +41,6 @@ func StartMainServer() error {
 	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/authenticate", authenticate)
+	http.HandleFunc("/todos", index)                        //ログインしているユーザーしか(/todos)にアクセスできない
 	return http.ListenAndServe(":"+config.Config.Port, nil) //(パッケージ名.変数名.フィールド)
 }
