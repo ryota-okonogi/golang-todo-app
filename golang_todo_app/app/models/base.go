@@ -16,8 +16,9 @@ var Db *sql.DB //変数Dbをポインタ型でグローバルに宣言
 var err error //エラーも変数として定義しておく
 
 const (
-	tableNameUser = "users" //constで定数としてテーブル名を宣言する
-	tableNameTodo = "todos"
+	tableNameUser    = "users" //constで定数としてテーブル名を宣言する
+	tableNameTodo    = "todos"
+	tableNameSession = "sessions"
 )
 
 // init関数 => テーブルはmain関数の前に作成する
@@ -44,6 +45,16 @@ func init() {
 			user_id INTEGER,
 			created_at DATETIME)`, tableNameTodo)
 	Db.Exec(cmdT)
+
+	//Session作成のコマンド
+	cmdS := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		uuid STRING NOT NULL UNIQUE,
+		email STRING,
+		user_id INTEGER,
+		created_at DATETIME)`, tableNameSession)
+	Db.Exec(cmdS)
+
 }
 
 //uuidとpasswordを作成する関数を用意する
