@@ -8,6 +8,7 @@ import (
 
 // "sample_todo/app/models"
 
+// signupのハンドラー
 func signup(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" { //r.Method とする事で、右辺で指定したリクエストのメソッドを取得する事ができる
 		generateHTML(w, nil, "layout", "public_navbar", "signup")
@@ -34,6 +35,33 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 func login(w http.ResponseWriter, r *http.Request) {
 	generateHTML(w, nil, "layout", "public_navbar", "login")
+}
+
+// loginのハンドラー
+func authenticate(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()                                         //フォームから値を取得する
+	user, err := models.GetUserByEmail(r.PostFormValue("email")) //フォームのEmailからユーザーを取得する //(r.PostFormValue("email")) => login.htmlの name="email" を指している
+	if err != nil {                                              //エラーハンドリング
+		log.Println(err)                   //もしエラーの場合は
+		http.Redirect(w, r, "/login", 302) //ログインできない => httpのリダイレクトでloginページにリダイレクトさせる
+	}
+	if user.PassWord == models.Encrypt(r.PostFormValue("password")) { //「ユーザーが存在してパスワードがフォームで入力されたpasswordと一致する場合はログインできる」ことを判定する
+		session, err := user.CreateSession() //passwordが一致したuserでsessionを作成する
+		if err != nil {                      //エラーハンドリング
+			log.Println(err)
+		}
+
+		//以下はパターンとして覚える
+		cookie := http.Cookie{ //http.Cookie = struct
+			Name:     "_cookie",
+			Value:    session.UUID, //CreateSessionで作成されたsessionのUUID
+			HttpOnly: true,
+		}
+		http.SetCookie(w, &cookie)
+		http.Redirect(w, r, "/", 302) //現時点ではログインページを作成していない為、Topページにリダイレクトさせる。
+	} else { //パスワードが一致しない場合
+		http.Redirect(w, r, "/login", 302)
+	}
 }
 
 /*
