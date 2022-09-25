@@ -11,7 +11,12 @@ import (
 // signupのハンドラー
 func signup(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" { //r.Method とする事で、右辺で指定したリクエストのメソッドを取得する事ができる
-		generateHTML(w, nil, "layout", "public_navbar", "signup")
+		_, err := session(w, r)
+		if err != nil {
+			generateHTML(w, nil, "layout", "public_navbar", "signup")
+		} else {
+			http.Redirect(w, r, "/todos", 302)
+		}
 		//入力フォームの解析(r.Method == "POST")
 	} else if r.Method == "POST" { //Postの場合で行う処理 = 入力フォームで入力された値を元に新しいユーザーを作成する
 		err := r.ParseForm() //r.ParseFormとする事で、「入力フォームの解析」を行う。
@@ -34,7 +39,12 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	generateHTML(w, nil, "layout", "public_navbar", "login")
+	_, err := session(w, r)
+	if err != nil {
+		generateHTML(w, nil, "layout", "public_navbar", "login")
+	} else {
+		http.Redirect(w, r, "/todos", 302)
+	}
 }
 
 // loginのハンドラー
