@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 )
 
@@ -16,10 +17,16 @@ func top(w http.ResponseWriter, r *http.Request) {
 
 // index.htmlの表示をするハンドラー
 func index(w http.ResponseWriter, r *http.Request) {
-	_, err := session(w, r) //sessionを使って「ログインしているかどうか」の判定を取得する
-	if err != nil {         //エラーが有る場合は
+	sess, err := session(w, r) //sessionを使って「ログインしているかどうか」の判定を取得する
+	if err != nil {            //エラーが有る場合は
 		http.Redirect(w, r, "/", 302) //ログインしていない = Topページにリダイレクトする
 	} else { //ただし、セッションが存在する場合は
-		generateHTML(w, nil, "layout", "private_navbar", "index") //indexを表示する
+		user, err := sess.GetUserBySession() //sessionのuser_idを使って、そのuser_idと一致するuserを取得する。
+		if err != nil {
+			log.Println(err)
+		}
+		todos, _ := user.GetTodosByUser()                          //userが作成したTodoの一覧を取得する
+		user.Todos = todos                                         //users.goのstructに定義した構造体をtodosに渡す
+		generateHTML(w, user, "layout", "private_navbar", "index") //indexを表示する
 	}
 }
