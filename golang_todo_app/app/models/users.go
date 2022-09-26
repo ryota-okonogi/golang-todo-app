@@ -157,3 +157,14 @@ func (sess *Session) CheckSession() (valid bool, err error) {
 	}
 	return valid, err //valid と err を返す
 }
+
+// UUIDと一致するsessionを削除するメソッド
+func (sess *Session) DeleteSessionByUUID() (err error) {
+	cmd := `delete from sessions where uuid = ?`
+	_, err = Db.Exec(cmd, sess.UUID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
+
+}
