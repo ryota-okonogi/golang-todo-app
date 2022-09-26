@@ -42,6 +42,8 @@ func StartMainServer() error {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/authenticate", authenticate)
 	http.HandleFunc("/logout", logout)
-	http.HandleFunc("/todos", index)                        //ログインしているユーザーしか(/todos)にアクセスできない
+	http.HandleFunc("/todos", index) //ログインしているユーザーしか(/todos)にアクセスできない
+	http.HandleFunc("/todos/new", todoNew)
+	http.HandleFunc("/todos/save", todoSave)
 	return http.ListenAndServe(":"+config.Config.Port, nil) //(パッケージ名.変数名.フィールド)
 }

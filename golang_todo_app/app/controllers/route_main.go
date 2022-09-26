@@ -30,3 +30,36 @@ func index(w http.ResponseWriter, r *http.Request) {
 		generateHTML(w, user, "layout", "private_navbar", "index") //indexを表示する
 	}
 }
+
+// todoを作成するハンドラー
+func todoNew(w http.ResponseWriter, r *http.Request) {
+	_, err := session(w, r) //ログインを確認する
+	if err != nil {         //エラーだった場合
+		http.Redirect(w, r, "/login", 302) //ログイン画面に遷移させる
+	} else { //もしログインしている場合は
+		generateHTML(w, nil, "layout", "private_navbar", "todo_new") //テンプレートを渡す
+	}
+}
+
+// todo_new.htmlに記載のURL("/todos/save")に対応するハンドラーを作成する
+func todoSave(w http.ResponseWriter, r *http.Request) {
+	sess, err := session(w, r) //セッションの確認
+	if err != nil {            //ログインしていない場合は
+		http.Redirect(w, r, "/login", 302) //ログインページにリダイレクトする
+	} else { //ログインしている場合は
+		err = r.ParseForm() //エラーハンドリングも含め、フォームの値を取得する。
+		if err != nil {
+			log.Println(err)
+		}
+		user, err := sess.GetUserBySession()
+		if err != nil {
+			log.Println(err)
+		}
+		content := r.PostFormValue("content")            //フォームの値を取得
+		if err := user.CreateTodo(content); err != nil { //取得したcontentをCreateTodoに渡してエラーハンドリングもする
+			log.Println(err)
+		}
+
+		http.Redirect(w, r, "/todos", 302) //最後に(/todos)にリダイレクトさせる
+	}
+}
