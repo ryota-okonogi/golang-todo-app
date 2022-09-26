@@ -74,6 +74,19 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ログアウトのハンドラー
+func logout(writer http.ResponseWriter, request *http.Request) {
+	cookie, err := request.Cookie("_cookie") //ブラウザからクッキーを取得する
+	if err != nil {                          //エラーハンドリング
+		log.Println(err)
+	}
+	if err != http.ErrNoCookie { //もしエラーが無かったら
+		session := models.Session{UUID: cookie.Value} //セッションのstructを作ってUUIDに取得したcookieのValueを渡す
+		session.DeleteSessionByUUID()                 //取得したsessionのUUIDと一致するものを削除する
+	}
+	http.Redirect(writer, request, "/login", 302) //削除したらhttp.Redirectで "/login" にリダイレクトする
+}
+
 /*
 	if r.Method == "GET" {
 		_, err := session(w, r)
@@ -165,13 +178,13 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	func logout(writer http.ResponseWriter, request *http.Request) {
-		cookie, err := request.Cookie("_cookie")
-		if err != nil {
+		cookie, err := request.Cookie("_cookie") //ブラウザからクッキーを取得する
+		if err != nil { //エラーハンドリング
 			log.Println(err)
 		}
-		if err != http.ErrNoCookie {
-			session := models.Session{UUID: cookie.Value}
-			session.DeleteSessionByUUID()
+		if err != http.ErrNoCookie { //もしエラーが無かったら
+			session := models.Session{UUID: cookie.Value} //セッションのstructを作ってUUIDに取得したcookieのValueを渡す
+			session.DeleteSessionByUUID() //取得したsessionのUUIDと一致するものを削除する
 		}
 		http.Redirect(writer, request, "/login", 302)
 */
