@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"golang-todo-app/golang_todo_app/app/models"
 	"log"
 	"net/http"
 )
@@ -61,5 +62,47 @@ func todoSave(w http.ResponseWriter, r *http.Request) {
 		}
 
 		http.Redirect(w, r, "/todos", 302) //最後に(/todos)にリダイレクトさせる
+	}
+}
+
+// todoの編集をするハンドラー(Edit)
+func todoEdit(w http.ResponseWriter, r *http.Request, id int) {
+	sess, err := session(w, r)
+	if err != nil { //エラーの場合
+		http.Redirect(w, r, "/login", 302) //ログイン画面にリダイレクトする
+	} else {
+		_, err := sess.GetUserBySession() //ここではuserは使わない為、返り値1は無しに設定する。
+		if err != nil {                   //userが居ない場合はエラーが返ってくる(エラーハンドリング)
+			log.Println(err)
+		}
+		t, err := models.GetTodo(id) //引数のIDからTodoを取得する
+		if err != nil {
+			log.Println(err)
+		}
+		generateHTML(w, t, "layout", "private_navbar", "todo_edit") //generateHTML(ResponseWriter, 返り値t, テンプレート1, テンプレート2)
+	}
+}
+
+// todoの更新をするハンドラー(Update)
+func todoUpdate(w http.ResponseWriter, r *http.Request, id int) {
+	sess, err := session(w, r)
+	if err != nil { //エラーの場合
+		http.Redirect(w, r, "/login", 302)
+	} else { //セッションがある場合
+		err := r.ParseForm() //エラーハンドリングを含め、フォームの値を取得する
+		if err != nil {
+			log.Println(err)
+		}
+		user, err := sess.GetUserBySession() //userを取得する
+		if err != nil {
+			log.Println(err)
+		}
+		content := r.PostFormValue("content") //フォームから値を取得する(index.htmlに記載の "content" を指定する)
+		//Todoのstructを作る
+		t := &models.Todo{ID: id, Content: content, UserID: user.ID} //ID = 引数のid, Content = 取得したcontent, UserID = セッションから取得したusr.ID
+		if err := t.UpdateTodo(); err != nil {                       //エラーハンドリングも同時にやる //structの「 t 」の UpdateTodoメソッドを使う
+			log.Println(err)
+		}
+		http.Redirect(w, r, "/todos", 302) //Updateしたら(/todos)にリダイレクトする
 	}
 }
