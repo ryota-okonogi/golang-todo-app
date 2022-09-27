@@ -6,6 +6,7 @@ import (
 	"golang-todo-app/golang_todo_app/config"
 	"html/template"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -71,5 +72,7 @@ func StartMainServer() error {
 	http.HandleFunc("/todos/edit/", parseURL(todoEdit)) //http.HandleFunc("Path", 関数(関数の引数))
 	http.HandleFunc("/todos/update/", parseURL(todoUpdate))
 	http.HandleFunc("/todos/delete/", parseURL(todoDelete))
-	return http.ListenAndServe(":"+config.Config.Port, nil) //(パッケージ名.変数名.フィールド)
+
+	port := os.Getenv("PORT")                 //PORTを取得する
+	return http.ListenAndServe(":"+port, nil) //(パッケージ名.変数名.フィールド) //取得したPORTを引数として渡す
 }

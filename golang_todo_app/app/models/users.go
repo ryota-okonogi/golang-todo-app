@@ -33,7 +33,7 @@ func (u *User) CreateUser() (err error) { //func (レシーバーの名前 型) 
 		name,
 		email,
 		password,
-		created_at) values (?, ?, ?, ?, ?)`
+		created_at) values ($1, $2, $3, $4, $5)`
 
 	_, err = Db.Exec(cmd, //Dbは、users.goファイルには存在しないが、modelsパッケージに存在する為「パッケージ名」を指定しなくとも使用する事ができる。
 		createUUID(),
@@ -55,7 +55,7 @@ func (u *User) CreateUser() (err error) { //func (レシーバーの名前 型) 
 func GetUser(id int) (user User, err error) { //func 関数名(引数 引数の型) (返り値1 型, 返り値2 型)
 	user = User{}
 	cmd := `select id, uuid, name, email, password, created_at
-	from users where id = ?`
+	from users where id = $1`
 	err = Db.QueryRow(cmd, id).Scan(
 		&user.ID,
 		&user.UUID,
@@ -71,7 +71,7 @@ func GetUser(id int) (user User, err error) { //func 関数名(引数 引数の�
 
 // メソッド
 func (u *User) UpdateUser() (err error) { //func (レシーバーの名前 型) メソッド名(引数なし) (返り値 返り値の型) {処理内容}
-	cmd := `update users set name = ?, email = ? where id = ?` //update users で指定したidの name, emailを更新するというコマンド
+	cmd := `update users set name = $1, email = $2 where id = $3` //update users で指定したidの name, emailを更新するというコマンド
 	_, err = Db.Exec(cmd, u.Name, u.Email, u.ID)
 	if err != nil {
 		log.Fatalln(err)
@@ -83,7 +83,7 @@ func (u *User) UpdateUser() (err error) { //func (レシーバーの名前 型) 
 
 // メソッド
 func (u *User) DeleteUser() (err error) {
-	cmd := `delete from users where id = ?` //delete from users で指定したidの user を削除するというコマンド
+	cmd := `delete from users where id = $1` //delete from users で指定したidの user を削除するというコマンド
 	_, err = Db.Exec(cmd, u.ID)
 	if err != nil {
 		log.Fatalln(err)
@@ -96,7 +96,7 @@ func (u *User) DeleteUser() (err error) {
 func GetUserByEmail(email string) (user User, err error) { //func 関数名(引数 引数の型) (返り値1 型, 返り値2 型)
 	user = User{}
 	cmd := `select id, uuid, name, email, password, created_at
-	from users where email = ?`
+	from users where email = $1`
 	err = Db.QueryRow(cmd, email).Scan(
 		&user.ID,
 		&user.UUID,
@@ -115,7 +115,7 @@ func (u *User) CreateSession() (session Session, err error) { //func (レシー�
 			uuid,
 			email,
 			user_id,
-			created_at) values (?, ?, ?, ?)`
+			created_at) values ($1, $2, $3, $4)`
 
 	_, err = Db.Exec(cmd1, createUUID(), u.Email, u.ID, time.Now()) //エラーハンドリングで「作成したSessionを取得してそのまま返す」という風にする
 
@@ -125,7 +125,7 @@ func (u *User) CreateSession() (session Session, err error) { //func (レシー�
 
 	//cmd1で作成したSessionをそのまま取得する
 	cmd2 := `select id, uuid, email, user_id, created_at
-	 from sessions where user_id = ? and email = ?` //usre_id と emailアドレスが一致するものを取得する
+	 from sessions where user_id = $1 and email = $2` //usre_id と emailアドレスが一致するものを取得する
 
 	err = Db.QueryRow(cmd2, u.ID, u.Email).Scan( //取得したデータをScanしてsessionに渡す
 		&session.ID,
@@ -139,7 +139,7 @@ func (u *User) CreateSession() (session Session, err error) { //func (レシー�
 // func (メソッドで使う構造体の略称 構造体の型) メソッド名(引数なし) (返り値 返り値の型) {処理内容}
 func (sess *Session) CheckSession() (valid bool, err error) {
 	cmd := `select id, uuid, email, user_id, created_at
-	 from sessions where uuid = ?`
+	 from sessions where uuid = $1`
 
 	err = Db.QueryRow(cmd, sess.UUID).Scan(
 		&sess.ID,
@@ -161,7 +161,7 @@ func (sess *Session) CheckSession() (valid bool, err error) {
 
 // UUIDと一致するsessionを削除するメソッド
 func (sess *Session) DeleteSessionByUUID() (err error) {
-	cmd := `delete from sessions where uuid = ?`
+	cmd := `delete from sessions where uuid = $1`
 	_, err = Db.Exec(cmd, sess.UUID)
 	if err != nil {
 		log.Fatalln(err)
@@ -174,7 +174,7 @@ func (sess *Session) DeleteSessionByUUID() (err error) {
 func (sess *Session) GetUserBySession() (user User, err error) {
 	user = User{}
 	cmd := `select id, uuid, name, email, created_at FROM users
-	where id = ?`
+	where id = $1`
 	err = Db.QueryRow(cmd, sess.UserID).Scan( //sessionの user_id と usersのidが一致するもの
 		&user.ID,
 		&user.UUID,

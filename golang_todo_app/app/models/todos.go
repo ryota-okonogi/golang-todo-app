@@ -17,7 +17,7 @@ func (u *User) CreateTodo(content string) (err error) { //func (レシーバー�
 	cmd := `insert into todos (
 		content,
 		user_id,
-		created_at) values (?, ?, ?)`
+		created_at) values ($1, $2, $3)`
 
 	_, err = Db.Exec(cmd, content, u.ID, time.Now()) //Dbは、users.goファイルには存在しないが、modelsパッケージに存在する為「パッケージ名」を指定しなくとも使用する事ができる。
 	if err != nil {
@@ -29,7 +29,7 @@ func (u *User) CreateTodo(content string) (err error) { //func (レシーバー�
 // Todoを取得する関数(取得1)
 func GetTodo(id int) (todo Todo, err error) { //func 関数名(引数 引数の型) (返り値1 型, 返り値2 型)
 	cmd := `select id, content, user_id, created_at from todos
-	where id = ?`
+	where id = $1`
 	todo = Todo{}
 
 	err = Db.QueryRow(cmd, id).Scan( //scan データ追加
@@ -67,7 +67,7 @@ func GetTodos() (todos []Todo, err error) { //func 関数名(引数なし) (返�
 // 「特定のユーザーの Todoのリストを取得する」という関数(取得3)
 func (u *User) GetTodosByUser() (todos []Todo, err error) { //func (レシーバーの名前 型) 関数名(引数なし) (返り値1 型, 返り値2 型) {処理内容}
 	cmd := `select id, content, user_id, created_at from todos
-	where user_id = ?`
+	where user_id = $1`
 
 	rows, err := Db.Query(cmd, u.ID)
 	if err != nil {
@@ -93,8 +93,8 @@ func (u *User) GetTodosByUser() (todos []Todo, err error) { //func (レシーバ
 
 // 更新
 func (t *Todo) UpdateTodo() error { //func (レシーバーの名前 型) 関数名(引数なし) 返り値 {処理内容}
-	cmd := `update todos set content = ?, user_id = ?
-	where id = ?`
+	cmd := `update todos set content = $1, user_id = $2
+	where id = $3`
 
 	_, err := Db.Exec(cmd, t.Content, t.UserID, t.ID)
 	if err != nil {
@@ -105,7 +105,7 @@ func (t *Todo) UpdateTodo() error { //func (レシーバーの名前 型) 関数
 
 // 削除
 func (t *Todo) DeleteTodo() error {
-	cmd := `delete from todos where id = ?`
+	cmd := `delete from todos where id = $1`
 
 	_, err = Db.Exec(cmd, t.ID)
 	if err != nil {
