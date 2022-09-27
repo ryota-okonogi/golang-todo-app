@@ -106,3 +106,24 @@ func todoUpdate(w http.ResponseWriter, r *http.Request, id int) {
 		http.Redirect(w, r, "/todos", 302) //Updateしたら(/todos)にリダイレクトする
 	}
 }
+
+// todoの削除をするハンドラー(Delete)
+func todoDelete(w http.ResponseWriter, r *http.Request, id int) {
+	sess, err := session(w, r) //セッションを確認する
+	if err != nil {
+		http.Redirect(w, r, "/login", 302)
+	} else {
+		_, err := sess.GetUserBySession() //セッションがあればuserを確認する(sess.GetUserBySession)
+		if err != nil {                   //エラーハンドリング
+			log.Println(err)
+		}
+		t, err := models.GetTodo(id) //idからtodoを取得する(models.GetTodo)
+		if err != nil {              //エラーハンドリング
+			log.Println(err)
+		}
+		if err := t.DeleteTodo(); err != nil { //(セッションがある場合[else]の)エラーハンドリング => t.DeleteTodo
+			log.Println(err)
+		}
+		http.Redirect(w, r, "/todos", 302) //削除したらhttp.Redirectで(/todos)にリダイレクトさせる
+	}
+}

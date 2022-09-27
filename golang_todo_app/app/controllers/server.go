@@ -35,7 +35,7 @@ func session(w http.ResponseWriter, r *http.Request) (sess models.Session, err e
 	return sess, err //sessionとエラーを返す
 }
 
-var validPath = regexp.MustCompile("^/todos/(edit|update)/([0-9]+)$") //URLの正規表現のパターンをコンパイルする
+var validPath = regexp.MustCompile("^/todos/(edit|update|delete)/([0-9]+)$") //URLの正規表現のパターンをコンパイルする
 
 // リクエストがあったら、そのURLからIDを取得する関数
 func parseURL(fn func(http.ResponseWriter, *http.Request, int)) http.HandlerFunc { //func 関数名(args略称 func(args1, args2, args3[最後のPathをint型として受け取る])) 返り値の型 {処理内容}
@@ -70,5 +70,6 @@ func StartMainServer() error {
 	http.HandleFunc("/todos/save", todoSave)
 	http.HandleFunc("/todos/edit/", parseURL(todoEdit)) //http.HandleFunc("Path", 関数(関数の引数))
 	http.HandleFunc("/todos/update/", parseURL(todoUpdate))
+	http.HandleFunc("/todos/delete/", parseURL(todoDelete))
 	return http.ListenAndServe(":"+config.Config.Port, nil) //(パッケージ名.変数名.フィールド)
 }
