@@ -1,7 +1,7 @@
 # README
 
 ## タイトル
-### Golang TodoApp
+### Sample TodoApp
 
 ## 概要
  - Todoアプリケーション
@@ -10,7 +10,7 @@
  - このリポジトリはGitとGitHubの復習をする為のものです。
 
 ## URL・テストアカウント
-- ポートフォリオURL　: [Golang TodoApp_URL](https://afternoon-lake-02407.herokuapp.com/)
+- ポートフォリオURL　: [Sample TodoApp_URL](https://afternoon-lake-02407.herokuapp.com/)
 - アカウント : guest
 - email : guest@sample.com
 - password : 1234
